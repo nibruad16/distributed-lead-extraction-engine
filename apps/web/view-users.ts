@@ -13,7 +13,7 @@ async function viewUsers() {
 
     console.log('📊 Registered Users:')
     console.log('===================')
-    users.forEach((user, index) => {
+    users.forEach((user: typeof users[number], index: number) => {
         console.log(`\n${index + 1}. ${user.name}`)
         console.log(`   Email: ${user.email}`)
         console.log(`   ID: ${user.id}`)
