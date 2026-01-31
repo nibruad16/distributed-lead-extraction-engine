@@ -21,6 +21,8 @@ type RegisterFormData = z.infer<typeof registerSchema>
 
 export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [success, setSuccess] = useState(false)
     const {
         register,
         handleSubmit,
@@ -31,11 +33,37 @@ export default function RegisterPage() {
 
     const onSubmit = async (data: RegisterFormData) => {
         setIsLoading(true)
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-        console.log('Registration data:', data)
-        setIsLoading(false)
-        // TODO: Implement actual registration logic
+        setError(null)
+
+        try {
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: data.fullName,
+                    email: data.email,
+                    password: data.password,
+                }),
+            })
+
+            const result = await response.json()
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Registration failed')
+            }
+
+            setSuccess(true)
+            // Redirect to login page after 1.5 seconds
+            setTimeout(() => {
+                window.location.href = '/login?registered=true'
+            }, 1500)
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred during registration')
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -67,6 +95,22 @@ export default function RegisterPage() {
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                        {/* Error Message */}
+                        {error && (
+                            <div className="bg-red-500/10 border border-red-500 rounded p-3">
+                                <p className="text-red-500 text-sm font-mono">{error}</p>
+                            </div>
+                        )}
+
+                        {/* Success Message */}
+                        {success && (
+                            <div className="bg-emerald-500/10 border border-emerald-500 rounded p-3">
+                                <p className="text-emerald-500 text-sm font-mono">
+                                    Account created successfully! Redirecting to login...
+                                </p>
+                            </div>
+                        )}
+
                         {/* Full Name */}
                         <div>
                             <label className="block text-xs text-zinc-500 font-mono mb-2 uppercase tracking-widest">

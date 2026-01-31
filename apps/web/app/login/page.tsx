@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { LogIn, Mail, Lock, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { signIn } from 'next-auth/react'
 
 const loginSchema = z.object({
     email: z.string().email('Invalid email address'),
@@ -17,6 +18,7 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
     const {
         register,
         handleSubmit,
@@ -27,11 +29,27 @@ export default function LoginPage() {
 
     const onSubmit = async (data: LoginFormData) => {
         setIsLoading(true)
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-        console.log('Login data:', data)
-        setIsLoading(false)
-        // TODO: Implement actual login logic
+        setError(null)
+
+        try {
+            const result = await signIn('credentials', {
+                email: data.email,
+                password: data.password,
+                redirect: false,
+                callbackUrl: '/dashboard',
+            })
+
+            if (result?.error) {
+                setError('Invalid email or password')
+            } else if (result?.ok) {
+                // Redirect to dashboard or callback URL
+                window.location.href = result.url || '/dashboard'
+            }
+        } catch (err) {
+            setError('An error occurred during login. Please try again.')
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -63,6 +81,13 @@ export default function LoginPage() {
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                        {/* Error Message */}
+                        {error && (
+                            <div className="bg-red-500/10 border border-red-500 rounded p-3">
+                                <p className="text-red-500 text-sm font-mono">{error}</p>
+                            </div>
+                        )}
+
                         {/* Email */}
                         <div>
                             <label className="block text-xs text-zinc-500 font-mono mb-2 uppercase tracking-widest">
