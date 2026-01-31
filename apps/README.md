@@ -21,7 +21,16 @@ b2b-lead-engine/
 ├── apps/
 │   ├── web/                 # (Next.js) The Dashboard & UI
 │   │   ├── app/             # App Router (Pages)
-│   │   ├── components/      # UI Components (Buttons, Tables)
+│   │   ├── components/      # UI Components (PS C:\Users\nibru\Documents\Dev\Dev\AI Agent and Automations\Distributed B2B Data Extraction Engine\apps\worker> docker-compose up
+#1 [internal] load local bake definitions
+#1 reading from stdin 693B done
+#1 DONE 0.0s
+[+] up 0/1
+ - Image apps-worker Building                                                                                                          0.6s 
+unable to prepare context: path "C:\\Users\\nibru\\Documents\\Dev\\Dev\\AI Agent and Automations\\Distributed B2B Data Extraction Engine\\apps\\apps\\worker" not found
+
+PS C:\Users\nibru\Documents\Dev\Dev\AI Agent and Automations\Distributed B2B Data Extraction Engine\apps\worker> 
+PS C:\Users\nibru\Documents\Dev\Dev\AI Agent and Automations\Distributed B2B Data Extraction Engine\apps\worker> Buttons, Tables)
 │   │   └── lib/             # API Clients
 │   │
 │   ├── api/                 # (NestJS) The Backend Logic

@@ -29,7 +29,7 @@ services:
 
   worker:
     build:
-      context: ./apps/worker
+      context: ./worker
       dockerfile: Dockerfile
     depends_on:
       - redis
